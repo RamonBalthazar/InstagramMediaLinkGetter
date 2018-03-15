@@ -61,4 +61,3 @@ ICD = {
 };
 
 ICD.start();
-setTimeout(ICD.finish, 3000);
