@@ -49,13 +49,13 @@ ICD = {
     clearInterval(ICD.interval_id);
   },
 
-  uniqueValues: function(value, index, self) {
-    return self.indexOf(value) === index;
+  getUniqueLinks: function(array) {
+    return Array.from(new Set(array));
   },
 
   finish: function() {
     ICD.stopScrolling();
-    window.copy(ICD.postLinks.filter(ICD.uniqueValues).join('\n'));
+    window.copy(ICD.getUniqueLinks(ICD.postLinks).join('\n'));
     console.log("Copied all posts' links to clipboard!");
   },
 };
