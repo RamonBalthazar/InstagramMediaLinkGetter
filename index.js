@@ -1,5 +1,5 @@
-ICD = {
-  INTERVAL_TIME_MS: 250,
+const ICD = {
+  INTERVAL_TIME_MS: 100,
 
   FETCH_TYPES: {
     video: true,
@@ -20,15 +20,17 @@ ICD = {
     return ICD.FETCH_TYPES[postType];
   },
 
-  getLinksOnScreen: function() {
+  postLinks: [],
+  updateLinks: function() {
     const postElements = document.getElementsByClassName(ICD.POST_CLASSES);
-    return Array.from(postElements)
+    const newLinks = Array.from(postElements)
       .filter(ICD.isPostTypeValid)
       .map(function(node) {
         const postLink = node.getElementsByTagName('a')[0].href;
         const cleanLink = postLink.split('?')[0];
         return cleanLink;
       });
+    ICD.postLinks = ICD.postLinks.concat(newLinks);
   },
 
   removeDuplicates: function() {
@@ -36,23 +38,36 @@ ICD = {
     ICD.postLinks = [...uniqueLinks];
   },
 
-  postLinks: [],
   loadPosts: function() {
     ICD.scroll();
-    ICD.getLinksOnScreen().forEach(function(link) {
-      ICD.postLinks.push(link);
-    });
+    ICD.updateLinks();
+    ICD.removeDuplicates();
   },
 
   interval_id: null,
+  interval_active: false,
   start: function() {
-    ICD.interval_id = setInterval(ICD.loadPosts, ICD.INTERVAL_TIME_MS);
+    ICD.interval_active = true;
+    ICD.interval_id = ICD.setIntervalMin(ICD.loadPosts, ICD.INTERVAL_TIME_MS);
     return undefined;
   },
 
-  stopScrolling: function() {
-    clearInterval(ICD.interval_id);
+  setIntervalMin: function(callback, delay) {
+    if (!ICD.interval_active) {
+      return undefined;
+    }
+    const timeBefore = performance.now();
 
+    callback();
+
+    const remainingTime = delay - (performance.now() - timeBefore);
+    setTimeout(function() {
+      ICD.setIntervalMin(callback, delay);
+    }, remainingTime);
+  },
+
+  stopScrolling: function() {
+    ICD.interval_active = false;
   },
 
   finish: function() {
@@ -64,3 +79,4 @@ ICD = {
 };
 
 ICD.start();
+ICD.finish();
