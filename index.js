@@ -31,6 +31,11 @@ ICD = {
       });
   },
 
+  removeDuplicates: function() {
+    const uniqueLinks = new Set(ICD.postLinks);
+    ICD.postLinks = [...uniqueLinks];
+  },
+
   postLinks: [],
   loadPosts: function() {
     ICD.scroll();
@@ -47,15 +52,13 @@ ICD = {
 
   stopScrolling: function() {
     clearInterval(ICD.interval_id);
-  },
 
-  getUniqueLinks: function(array) {
-    return Array.from(new Set(array));
   },
 
   finish: function() {
     ICD.stopScrolling();
-    window.copy(ICD.getUniqueLinks(ICD.postLinks).join('\n'));
+    ICD.removeDuplicates();
+    window.copy(ICD.postLinks.join('\n'));
     console.log("Copied all posts' links to clipboard!");
   },
 };
