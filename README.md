@@ -1,3 +1,7 @@
-# Instagram Console Downloader
+# Instagram Media Link Getter
 
-Download photos and videos through Instagram's web interface
+Copy all post links from a search query at `instagram.com`.
+
+# How to use this
+
+SOON!
